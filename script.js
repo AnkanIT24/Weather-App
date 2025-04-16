@@ -1,5 +1,5 @@
 const baseWeatherUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
-const weatherApiKey = "?key=M45PB4RTX5CXMXQZJ4JX4GUM2"
+const weatherApiKey = "?key=URQR6AXAQN9ERTS5DA9CZ4CYK"
 const weather = document.querySelector("#weather");
 const loading = document.querySelector("#loading");
 let weatherLocation = "howrah";
