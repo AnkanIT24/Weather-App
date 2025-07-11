@@ -77,7 +77,7 @@ function updateWeather(allData) {
 async function showForecast () {
     weather.style.display = "none";
     loading.style.display = "block";
-    const response = await fetch(baseWeatherUrl + "/" + weatherLocation + weatherApiKey);
+    const response = await fetch(baseWeatherUrl +  weatherLocation + weatherApiKey);
     const weatherData = await response.json();
     const address = weatherData.resolvedAddress;
     let temp = weatherData.days[0].temp;
