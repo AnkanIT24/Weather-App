@@ -70,6 +70,28 @@ body {
     border-radius: 16px;
     padding: 4px 8px 4px 16px;
     box-shadow: var(--shadow);
+    gap: 12px;
+}
+
+#locate-me {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+#locate-me:hover {
+    transform: scale(1.1);
+    color: var(--accent-vibrant);
+}
+
+#locate-me svg {
+    width: 22px;
+    height: 22px;
 }
 
 #search input {
@@ -147,6 +169,112 @@ body {
     color: var(--text-primary);
 }
 
+/* Info Banner (Suggestions) */
+.info-banner {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    padding: 24px;
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info-banner .content {
+    flex: 1;
+}
+
+.info-banner .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.info-banner p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.info-banner .icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* AQI Card Refinement */
+.aq-card {
+    border-left: 4px solid var(--accent);
+}
+
+.mini-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 4px;
+}
+
+/* Dynamic Background Effects */
+#bg-effects {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* Rain Effect */
+.rain {
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(transparent, rgba(59, 130, 246, 0.4));
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh);
+    }
+}
+
+/* Snow Effect */
+.snow {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: drift linear infinite;
+}
+
+@keyframes drift {
+    0% {
+        transform: translate(0, -10px) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(100px, 100vh) rotate(360deg);
+    }
+}
+
 /* Dashboard Layout */
 .dashboard-grid {
     display: flex;
@@ -205,7 +333,7 @@ body {
 }
 
 .temperature {
-    font-size: 8rem;
+    font-size: clamp(5rem, 15vw, 8rem);
     font-weight: 700;
     line-height: 1;
 }
@@ -408,21 +536,43 @@ h3 {
     }
 }
 
-/* Mobile & PC Responsiveness */
-@media (min-width: 1024px) {
-    .dashboard-grid {
-        flex-direction: row;
-        align-items: flex-start;
-    }
+/* Main Dashboard Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
 
-    .main-column {
-        flex: 2;
+/* Main Column */
+.main-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    min-width: 0;
+    /* Fix flex child stretching */
+}
+
+/* Mobile & PC Responsiveness */
+/* PC/Tablet View - Lowered from 1024px to 768px */
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
     }
 
     .sidebar {
-        flex: 1;
         position: sticky;
         top: 24px;
+    }
+
+    .hero-card {
+        padding: 48px;
+        min-height: 300px;
+    }
+
+    .hourly-item {
+        min-width: 110px;
+        padding: 16px;
     }
 }
 
@@ -433,18 +583,18 @@ h3 {
     }
 
     .hero-card {
-        padding: 30px 20px;
+        padding: 32px 20px;
         flex-direction: column;
-        gap: 20px;
+        gap: 24px;
         text-align: center;
     }
 
     .temperature {
-        font-size: 6rem;
+        font-size: 5rem;
     }
 
     .temperature sup {
-        font-size: 3rem;
+        font-size: 2rem;
     }
 
     .location-info .address {
