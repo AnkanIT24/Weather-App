@@ -4,127 +4,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App - Minimal</title>
+    <title>Advanced Weather Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="./style.css" rel="stylesheet">
     <script src="./script.js" defer></script>
 </head>
 
 <body class="light-mode">
     <div class="app-container">
-        <!-- Search Area -->
-        <div id="search">
-            <input type="text" id="location" placeholder="Search city...">
-            <button id="submit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </button>
-            <div id="theme-toggle" class="theme-icon">
-                <!-- Sun icon for dark mode toggle -->
-                <svg id="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <!-- Moon icon (hidden by default) -->
-                <svg id="theme-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
+        <!-- Top Bar: Search & Actions -->
+        <header id="top-bar">
+            <div id="search">
+                <input type="text" id="location" placeholder="Search for a city...">
+                <button id="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
             </div>
-        </div>
 
-        <!-- Main Weather Info -->
+            <div class="actions">
+                <div class="unit-toggle" id="mode-toggle">
+                    <span class="active" data-unit="C">°C</span>
+                    <span data-unit="F">°F</span>
+                </div>
+                <div id="theme-toggle" class="theme-icon">
+                    <svg id="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="theme-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
         <main id="weather">
-            <header class="location-header">
-                <h1 class="address">Loading...</h1>
-                <p class="current-date">Sunday, 24 April</p>
-            </header>
-
-            <section class="hero">
-                <div class="temperature">--<sup>°</sup></div>
-                <div class="conditions">--</div>
-            </section>
-
-            <!-- Hourly Forecast (Placeholder for now) -->
-            <section class="hourly-forecast">
-                <div class="scroll-container" id="hourly-list">
-                    <!-- Hourly items will be injected here if logic is added later -->
-                    <div class="hourly-item"><span>Now</span>
-                        <div class="icon">☁️</div><span>--°</span>
+            <div class="dashboard-grid">
+                <!-- Hero Column -->
+                <div class="main-column">
+                    <div class="location-info">
+                        <h1 class="address">Searching...</h1>
+                        <p class="current-date">--</p>
                     </div>
-                    <div class="hourly-item"><span>12:00</span>
-                        <div class="icon">☁️</div><span>--°</span>
-                    </div>
-                    <div class="hourly-item"><span>13:00</span>
-                        <div class="icon">☀️</div><span>--°</span>
-                    </div>
-                    <div class="hourly-item"><span>14:00</span>
-                        <div class="icon">☀️</div><span>--°</span>
-                    </div>
-                </div>
-            </section>
 
-            <!-- Weather Details Grid -->
-            <section class="details-grid">
-                <div class="detail-item">
-                    <span class="label">Sunrise</span>
-                    <span class="value" id="sunrise">--:--</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Sunset</span>
-                    <span class="value" id="sunset">--:--</span>
-                </div>
-                <div class="detail-item feels">
-                    <span class="label">Feels like</span>
-                    <span class="value">--°</span>
-                </div>
-                <div class="detail-item wind">
-                    <span class="label">Wind</span>
-                    <span class="value">-- km/h</span>
-                </div>
-                <div class="detail-item humidity">
-                    <span class="label">Humidity</span>
-                    <span class="value">--%</span>
-                </div>
-                <div class="detail-item pressure">
-                    <span class="label">Atmospheric pressure</span>
-                    <span class="value" id="pressure">-- hPa</span>
-                </div>
-                <div class="detail-item visibility">
-                    <span class="label">Visibility</span>
-                    <span class="value" id="visibility">-- km</span>
-                </div>
-                <div class="detail-item uv">
-                    <span class="label">Ultraviolet</span>
-                    <span class="value" id="uv">-- low</span>
-                </div>
-            </section>
+                    <div class="hero-card">
+                        <div class="temp-section">
+                            <span class="temperature">--<sup>°</sup></span>
+                            <span class="conditions">Loading forecast...</span>
+                        </div>
+                        <div class="hero-media">
+                            <!-- Weather icon will be dynamic -->
+                            <div id="main-icon"></div>
+                        </div>
+                    </div>
 
-            <!-- Weekly Forecast -->
-            <section class="weekly-forecast" id="weekly-list">
-                <!-- Weekly items -->
-                <div class="weekly-item">
-                    <span>24 Apr</span>
-                    <span>10°/18°</span>
+                    <div class="hourly-section">
+                        <h3>Next 24 Hours</h3>
+                        <div class="scroll-container" id="hourly-list">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h3>Detailed Info</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="label">Feels like</span>
+                                <span class="value" id="feels-like">--°</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Wind speed</span>
+                                <span class="value" id="wind">-- km/h</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Humidity</span>
+                                <span class="value" id="humidity">--%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Visibility</span>
+                                <span class="value" id="visibility">-- km</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Atmospheric Pressure</span>
+                                <span class="value" id="pressure">-- hPa</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">UV Index</span>
+                                <span class="value" id="uv">--</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
+
+                <!-- Forecast Column -->
+                <aside class="sidebar">
+                    <h3>7-Day Forecast</h3>
+                    <div class="weekly-list" id="weekly-list">
+                        <!-- Injected by JS -->
+                    </div>
+
+                    <div class="sun-times-card">
+                        <div class="sun-item">
+                            <span class="label">Sunrise</span>
+                            <span class="value" id="sunrise">--:--</span>
+                        </div>
+                        <div class="sun-item">
+                            <span class="label">Sunset</span>
+                            <span class="value" id="sunset">--:--</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </main>
 
         <div id="loading">
             <div class="spinner"></div>
+            <p>Preparing Forecast...</p>
         </div>
     </div>
 </body>
