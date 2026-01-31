@@ -180,7 +180,6 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow);
-    animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideIn {
@@ -550,6 +549,25 @@ h3 {
     gap: 32px;
     min-width: 0;
     /* Fix flex child stretching */
+}
+
+/* GSAP Animation Prep */
+#theme-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    pointer-events: none;
+    background: var(--bg-gradient);
+    clip-path: circle(0% at 0% 0%);
+}
+
+.location-info,
+.hero-card,
+.info-banner,
+.hourly-section,
+.sidebar,
+.details-section {
+    opacity: 0;
 }
 
 /* Mobile & PC Responsiveness */

@@ -20,16 +20,55 @@ const iconMap = {
     'clear-night': '🌙'
 };
 
-// Theme Toggle
+// GSAP Animations
+function animateEntrance() {
+    gsap.fromTo(".location-info, .hero-card, .info-banner, .hourly-section, .sidebar, .details-section",
+        { opacity: 0, y: 30 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power2.out",
+            clearProps: "transform" // Clear transform to avoid issues with sticky/hover
+        }
+    );
+}
+
 const themeToggle = document.getElementById('theme-toggle');
+const curtain = document.getElementById('theme-curtain');
 const sunIcon = document.getElementById('theme-sun');
 const moonIcon = document.getElementById('theme-moon');
 
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
+themeToggle.addEventListener('click', (e) => {
     const isDark = document.body.classList.contains('dark-mode');
-    sunIcon.style.display = isDark ? 'none' : 'block';
-    moonIcon.style.display = isDark ? 'block' : 'none';
+    const nextTheme = isDark ? 'light' : 'dark';
+
+    // Get click position for circular expansion
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // Set curtain background based on next theme
+    curtain.style.background = nextTheme === 'dark' ? '#0f172a' : '#f8fafc';
+
+    const tl = gsap.timeline();
+
+    tl.to(curtain, {
+        clipPath: `circle(150% at ${x}px ${y}px)`,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+            document.body.classList.toggle('dark-mode');
+            sunIcon.style.display = nextTheme === 'dark' ? 'none' : 'block';
+            moonIcon.style.display = nextTheme === 'dark' ? 'block' : 'none';
+
+            // Reset curtain for next time
+            gsap.set(curtain, { clipPath: `circle(0% at ${x}px ${y}px)` });
+        }
+    });
+
+    // Subtly scale the icon on click
+    gsap.fromTo(themeToggle, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: "back.out(2)" });
 });
 
 // Unit Toggle
@@ -143,6 +182,9 @@ function renderAll(data) {
 
     loadingEl.style.display = "none";
     weatherEl.style.display = "block";
+
+    // GSAP Entrance
+    animateEntrance();
 }
 
 function renderHourly(days) {
