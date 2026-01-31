@@ -3,126 +3,119 @@ const weatherApiKey = "?key=URQR6AXAQN9ERTS5DA9CZ4CYK"
 const weather = document.querySelector("#weather");
 const loading = document.querySelector("#loading");
 let weatherLocation = "howrah";
-let temp;
 let mode = "C";
 let storeTemp, storeFeels;
 
+// Theme Toggle Logic
+const themeToggle = document.getElementById('theme-toggle');
+const sunIcon = document.getElementById('theme-sun');
+const moonIcon = document.getElementById('theme-moon');
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    sunIcon.style.display = isDark ? 'none' : 'block';
+    moonIcon.style.display = isDark ? 'block' : 'none';
+});
 
 function tempToggleChange(mainTemp, feelsTemp) {
     const temp = document.querySelector(".temperature");
-    temp.textContent = mainTemp;
-    const tempSymbol = document.createElement("sup");
-    if (mode == "C") {
-        tempSymbol.textContent = "°C";
-    }
-    else {
-        tempSymbol.textContent = "°F";
-    }
-    temp.appendChild(tempSymbol);
+    temp.innerHTML = `${mainTemp}<sup>°</sup>`;
 
-    const feelsLike = document.querySelector(".feels");
-    feelsLike.textContent = "Feels like " + feelsTemp;
-    const feelsSymbol = document.createElement("sup");
-    if (mode == "C") {
-        feelsSymbol.textContent = "°C";
-    }
-    else {
-        feelsSymbol.textContent = "°F";
-    }
-    feelsLike.appendChild(feelsSymbol);
+    const feelsValue = document.querySelector(".detail-item.feels .value");
+    feelsValue.textContent = `${feelsTemp}°`;
 }
-
-
 
 function updateWeather(allData) {
     console.log(allData);
-    weather.style.display = "grid";
+    weather.style.display = window.innerWidth < 1024 ? "flex" : "grid"; // Flex for mobile, grid for PC
     loading.style.display = "none";
 
+    // Header
     const address = document.querySelector(".address");
     address.textContent = allData.address;
 
+    const dateEl = document.querySelector(".current-date");
+    const now = new Date();
+    dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    // Hero
     const temp = document.querySelector(".temperature");
-    temp.textContent = allData.temp;
-    const tempSymbol = document.createElement("sup");
-    if (mode == "C") {
-        tempSymbol.textContent = "°C";
-    }
-    else {
-        tempSymbol.textContent = "°F";
-    }
-    temp.appendChild(tempSymbol);
-
-    const feelsLike = document.querySelector(".feels");
-    feelsLike.textContent = "Feels like " + allData.feelsLike;
-    const feelsSymbol = document.createElement("sup");
-    if (mode == "C") {
-        feelsSymbol.textContent = "°C";
-    }
-    else {
-        feelsSymbol.textContent = "°F";
-    }
-    feelsLike.appendChild(feelsSymbol);
-
-    const humidity = document.querySelector(".humidity");
-    humidity.textContent = "Humidity : " + allData.humidity + "%";
-
-    const wind = document.querySelector(".wind");
-    wind.textContent = "Wind : " + allData.wind + "MPH";
+    temp.innerHTML = `${allData.temp}<sup>°</sup>`;
 
     const conditions = document.querySelector(".conditions");
     conditions.textContent = allData.conditions;
+
+    // Details Grid
+    document.querySelector(".detail-item.feels .value").textContent = `${allData.feelsLike}°`;
+    document.querySelector(".detail-item.humidity .value").textContent = `${allData.humidity}%`;
+    document.querySelector(".detail-item.wind .value").textContent = `${allData.wind} km/h`;
+
+    document.getElementById("sunrise").textContent = allData.sunrise.slice(0, 5);
+    document.getElementById("sunset").textContent = allData.sunset.slice(0, 5);
+    document.getElementById("pressure").textContent = `${allData.pressure} hPa`;
+    document.getElementById("visibility").textContent = `${allData.visibility} km`;
+    document.getElementById("uv").textContent = `${allData.uv} low`;
 }
 
-async function showForecast () {
+async function showForecast() {
     weather.style.display = "none";
     loading.style.display = "block";
-    const response = await fetch(baseWeatherUrl +  weatherLocation + weatherApiKey);
-    const weatherData = await response.json();
-    const address = weatherData.resolvedAddress;
-    let temp = weatherData.days[0].temp;
-    storeTemp = temp;
-    let feelsLike = weatherData.days[0].feelslike;
-    storeFeels = feelsLike;
-    const humidity = weatherData.days[0].humidity;
-    const wind = weatherData.days[0].windspeed;
-    let conditions = weatherData.days[0].conditions;
-    conditions = conditions.split(", ")[0];
-    if (mode == "C") {
-        temp = fahrenheitToCelsius(temp);
-        feelsLike = fahrenheitToCelsius(feelsLike);
-    }
-    updateWeather({address, temp, feelsLike, humidity, wind, conditions});
-}
+    try {
+        const response = await fetch(baseWeatherUrl + weatherLocation + weatherApiKey);
+        const weatherData = await response.json();
 
+        const dayData = weatherData.days[0];
+        const address = weatherData.resolvedAddress;
+
+        let temp = dayData.temp;
+        storeTemp = temp;
+        let feelsLike = dayData.feelslike;
+        storeFeels = feelsLike;
+
+        const humidity = dayData.humidity;
+        const wind = dayData.windspeed;
+        let conditions = dayData.conditions;
+        conditions = conditions.split(", ")[0];
+
+        const sunrise = dayData.sunrise;
+        const sunset = dayData.sunset;
+        const pressure = dayData.pressure;
+        const visibility = dayData.visibility;
+        const uv = dayData.uvindex;
+
+        if (mode == "C") {
+            temp = fahrenheitToCelsius(temp);
+            feelsLike = fahrenheitToCelsius(feelsLike);
+        }
+
+        updateWeather({
+            address, temp, feelsLike, humidity, wind, conditions,
+            sunrise, sunset, pressure, visibility, uv
+        });
+    } catch (error) {
+        console.error("Error fetching weather:", error);
+        loading.style.display = "none";
+    }
+}
 
 function fahrenheitToCelsius(fahrenheit) {
     return parseFloat(((fahrenheit - 32) * 5 / 9).toFixed(1));
 }
 
-
 const getLocationBtn = document.querySelector("#submit");
+const locationInput = document.querySelector("#location");
 
 getLocationBtn.addEventListener("click", () => {
-    const getLocation = document.querySelector("#location");
-    weatherLocation = getLocation.value;
+    weatherLocation = locationInput.value;
     showForecast();
 });
 
-
-const conversionBtn = document.querySelector(".toggle-btn");
-
-conversionBtn.addEventListener("click", () => {
-    if (mode == "F") {
-        mode = "C";
-        tempToggleChange(fahrenheitToCelsius(storeTemp), fahrenheitToCelsius(storeFeels));
+locationInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        weatherLocation = locationInput.value;
+        showForecast();
     }
-    else {
-        mode = "F";
-        tempToggleChange(storeTemp, storeFeels);
-    }
-    const btn = document.querySelectorAll(".toggle");
-    btn.forEach((button) => button.classList.toggle("active"));
-})
+});
 
 showForecast();
