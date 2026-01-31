@@ -14,10 +14,18 @@
 </head>
 
 <body class="light-mode">
+    <div id="bg-effects"></div> <!-- Dynamic background effects container -->
     <div class="app-container">
         <!-- Top Bar: Search & Actions -->
         <header id="top-bar">
             <div id="search">
+                <button id="locate-me" title="Use my current location">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </button>
                 <input type="text" id="location" placeholder="Search for a city...">
                 <button id="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
@@ -67,12 +75,21 @@
                     <div class="hero-card">
                         <div class="temp-section">
                             <span class="temperature">--<sup>°</sup></span>
-                            <span class="conditions">Loading forecast...</span>
+                            <span class="conditions">Loading...</span>
                         </div>
                         <div class="hero-media">
                             <!-- Weather icon will be dynamic -->
                             <div id="main-icon"></div>
                         </div>
+                    </div>
+
+                    <!-- Smart Suggestions Card -->
+                    <div id="suggestions-card" class="info-banner">
+                        <div class="content">
+                            <span class="label">Smart Advice</span>
+                            <p id="clothing-advice">Fetching recommendations...</p>
+                        </div>
+                        <div class="icon">🧥</div>
                     </div>
 
                     <div class="hourly-section">
@@ -85,6 +102,11 @@
                     <div class="details-section">
                         <h3>Detailed Info</h3>
                         <div class="details-grid">
+                            <div class="detail-item aq-card">
+                                <span class="label">Air Quality</span>
+                                <span class="value" id="aqi">--</span>
+                                <span id="aqi-desc" class="mini-label">Loading...</span>
+                            </div>
                             <div class="detail-item">
                                 <span class="label">Feels like</span>
                                 <span class="value" id="feels-like">--°</span>
