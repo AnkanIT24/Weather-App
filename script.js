@@ -93,10 +93,10 @@ function updateBgEffects(icon) {
 
 function renderAll(data) {
     const current = data.currentConditions;
-    const today = data.days[0];
 
-    // Basic Info
+    // Ensure we use the API's resolved address (city name) instead of raw coordinates
     document.querySelector(".address").textContent = data.resolvedAddress;
+
     const now = new Date();
     document.querySelector(".current-date").textContent = now.toLocaleDateString('en-US', {
         weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
