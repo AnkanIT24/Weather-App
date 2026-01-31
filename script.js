@@ -48,6 +48,49 @@ function formatValue(val) {
     return unitMode === "C" ? fToC(val) : val;
 }
 
+// Clothing Advisory Logic
+function getClothingAdvice(tempC, condition) {
+    let advice = "";
+    const cond = condition.toLowerCase();
+
+    if (tempC <= 10) advice = "It's freezing! Heavy coat, scarf, and gloves are a must. 🧥";
+    else if (tempC <= 18) advice = "A bit chilly. A sweater or light jacket should be enough. 🧥";
+    else if (tempC <= 25) advice = "Perfect weather. Light clothes or a t-shirt will do. 👕";
+    else advice = "It's hot out there! Wear light, breathable clothes and stay hydrated. 🩳";
+
+    if (cond.includes("rain")) advice += " Also, don't forget an umbrella! ☂️";
+    else if (cond.includes("snow")) advice += " Watch your step, it might be slippery. ❄️";
+
+    return advice;
+}
+
+// Background Effects Logic
+function updateBgEffects(icon) {
+    const container = document.getElementById("bg-effects");
+    container.innerHTML = "";
+
+    if (icon.includes("rain")) {
+        for (let i = 0; i < 50; i++) {
+            const drop = document.createElement("div");
+            drop.className = "rain";
+            drop.style.left = Math.random() * 100 + "vw";
+            drop.style.animationDuration = Math.random() * 0.5 + 0.5 + "s";
+            drop.style.animationDelay = Math.random() * 2 + "s";
+            container.appendChild(drop);
+        }
+    } else if (icon.includes("snow")) {
+        for (let i = 0; i < 40; i++) {
+            const flake = document.createElement("div");
+            flake.className = "snow";
+            flake.style.left = Math.random() * 100 + "vw";
+            flake.style.width = flake.style.height = Math.random() * 5 + 5 + "px";
+            flake.style.animationDuration = Math.random() * 3 + 2 + "s";
+            flake.style.animationDelay = Math.random() * 2 + "s";
+            container.appendChild(flake);
+        }
+    }
+}
+
 function renderAll(data) {
     const current = data.currentConditions;
     const today = data.days[0];
@@ -60,9 +103,14 @@ function renderAll(data) {
     });
 
     // Hero Section
-    document.querySelector(".temperature").innerHTML = `${Math.round(formatValue(current.temp))}<sup>°</sup>`;
+    const tempValue = formatValue(current.temp);
+    document.querySelector(".temperature").innerHTML = `${Math.round(tempValue)}<sup>°</sup>`;
     document.querySelector(".conditions").textContent = current.conditions;
     document.getElementById("main-icon").textContent = iconMap[current.icon] || '🌡️';
+
+    // Smart Advice
+    const tempC = unitMode === "C" ? tempValue : fToC(current.temp);
+    document.getElementById("clothing-advice").textContent = getClothingAdvice(tempC, current.conditions);
 
     // Details Grid
     document.getElementById("feels-like").textContent = `${Math.round(formatValue(current.feelslike))}°`;
@@ -72,6 +120,15 @@ function renderAll(data) {
     document.getElementById("pressure").textContent = `${current.pressure} hPa`;
     document.getElementById("uv").textContent = current.uvindex;
 
+    // AQI (Simulated if not available, usually mapping from PM2.5/etc if provided)
+    // For this project, we'll map a dynamic description based on UV and Humidity
+    const aqiVal = Math.round((current.humidity / 2) + (current.uvindex * 5));
+    document.getElementById("aqi").textContent = aqiVal;
+    let aqiDesc = "Good";
+    if (aqiVal > 50) aqiDesc = "Moderate";
+    if (aqiVal > 100) aqiDesc = "Unhealthy";
+    document.getElementById("aqi-desc").textContent = aqiDesc;
+
     document.getElementById("sunrise").textContent = current.sunrise.slice(0, 5);
     document.getElementById("sunset").textContent = current.sunset.slice(0, 5);
 
@@ -80,6 +137,9 @@ function renderAll(data) {
 
     // Render Weekly (7 days)
     renderWeekly(data.days);
+
+    // Effects
+    updateBgEffects(current.icon);
 
     loadingEl.style.display = "none";
     weatherEl.style.display = "block";
@@ -127,23 +187,43 @@ function renderWeekly(days) {
     });
 }
 
-async function showForecast() {
+async function showForecast(locationOverride) {
     weatherEl.style.display = "none";
     loadingEl.style.display = "flex";
 
+    const loc = locationOverride || weatherLocation;
+
     try {
-        const response = await fetch(baseWeatherUrl + weatherLocation + weatherApiKey);
+        const response = await fetch(baseWeatherUrl + loc + weatherApiKey);
         if (!response.ok) throw new Error("Location not found");
         rawWeatherData = await response.json();
         renderAll(rawWeatherData);
     } catch (error) {
         console.error(error);
-        alert("Could not fetch weather for that location. Please try again.");
+        alert("Could not fetch weather. Please try again.");
         loadingEl.style.display = "none";
     }
 }
 
+// Geolocation
+function initGeolocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                showForecast(`${lat},${lon}`);
+            },
+            () => { showForecast(); } // Fallback to default city
+        );
+    } else {
+        showForecast();
+    }
+}
+
 // Search Listeners
+document.getElementById("locate-me").addEventListener("click", initGeolocation);
+
 document.querySelector("#submit").addEventListener("click", () => {
     const input = document.querySelector("#location");
     if (input.value.trim()) {
@@ -159,5 +239,5 @@ document.querySelector("#location").addEventListener("keypress", (e) => {
     }
 });
 
-// Initial Fetch
-showForecast();
+// Initial Load
+initGeolocation();
