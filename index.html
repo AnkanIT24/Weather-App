@@ -1,107 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Advanced Weather Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="./style.css" rel="stylesheet">
-    <script src="./script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script type="module" src="./js/main.js"></script>
 </head>
-<body>
-    <div id="search">
-        <div class="convert">
-            <div>°F</div>
-            <div class="toggle-btn">
-                <div class="toggle" id="F">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="1 6 22 12">
-                        <title>toggle-switch-off-outline</title>
-                        <path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69
-                        6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0
-                        4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34
-                        3-3-1.34-3-3-3z" fill="white"/>
+
+<body class="light-mode">
+    <div id="theme-curtain"></div>
+    <div id="bg-effects"></div> <!-- Dynamic background effects container -->
+    <div class="app-container">
+        <!-- Top Bar: Search & Actions -->
+        <header id="top-bar">
+            <div id="search">
+                <button id="locate-me" title="Use my current location">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
                     </svg>
+                </button>
+                <input type="text" id="location" placeholder="Search for a city...">
+                <button id="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="actions">
+                <div class="unit-toggle" id="mode-toggle">
+                    <span class="active" data-unit="C">°C</span>
+                    <span data-unit="F">°F</span>
                 </div>
-                <div class="toggle active" id="C">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="1 6 22 12">
-                        <title>toggle-switch-outline</title>
-                        <path d="M17 6H7C3.69 6 1 8.69 1 12S3.69 18 7 18H17C20.31 18 23 15.31
-                        23 12S20.31 6 17 6M17 16H7C4.79 16 3 14.21 3 12S4.79 8 7 8H17C19.21
-                        8 21 9.79 21 12S19.21 16 17 16M17 9C15.34 9 14 10.34 14 12S15.34 15
-                        17 15 20 13.66 20 12 18.66 9 17 9Z" fill="white"/>
+                <div id="theme-toggle" class="theme-icon">
+                    <svg id="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="theme-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                 </div>
             </div>
-            <div>°C</div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main id="weather">
+            <div class="dashboard-grid">
+                <!-- Hero Column -->
+                <div class="main-column">
+                    <div class="location-info">
+                        <h1 class="address">Searching...</h1>
+                        <p class="current-date">--</p>
+                    </div>
+
+                    <div class="hero-card">
+                        <div class="temp-section">
+                            <span class="temperature">--<sup>°</sup></span>
+                            <span class="conditions">Loading...</span>
+                        </div>
+                        <div class="hero-media">
+                            <!-- Weather icon will be dynamic -->
+                            <div id="main-icon"></div>
+                        </div>
+                    </div>
+
+                    <!-- Smart Suggestions Card -->
+                    <div id="suggestions-card" class="info-banner">
+                        <div class="content">
+                            <span class="label">Smart Advice</span>
+                            <p id="clothing-advice">Fetching recommendations...</p>
+                        </div>
+                        <div class="icon">🧥</div>
+                    </div>
+
+                    <div class="hourly-section">
+                        <h3>Next 24 Hours</h3>
+                        <div class="scroll-container" id="hourly-list">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h3>Detailed Info</h3>
+                        <div class="details-grid">
+                            <div class="detail-item aq-card">
+                                <span class="label">Air Quality</span>
+                                <span class="value" id="aqi">--</span>
+                                <span id="aqi-desc" class="mini-label">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Feels like</span>
+                                <span class="value" id="feels-like">--°</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Wind speed</span>
+                                <span class="value" id="wind">-- km/h</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Humidity</span>
+                                <span class="value" id="humidity">--%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Visibility</span>
+                                <span class="value" id="visibility">-- km</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Atmospheric Pressure</span>
+                                <span class="value" id="pressure">-- hPa</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">UV Index</span>
+                                <span class="value" id="uv">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forecast Column -->
+                <aside class="sidebar">
+                    <h3>7-Day Forecast</h3>
+                    <div class="weekly-list" id="weekly-list">
+                        <!-- Injected by JS -->
+                    </div>
+
+                    <div class="sun-times-card">
+                        <div class="sun-item">
+                            <span class="label">Sunrise</span>
+                            <span class="value" id="sunrise">--:--</span>
+                        </div>
+                        <div class="sun-item">
+                            <span class="label">Sunset</span>
+                            <span class="value" id="sunset">--:--</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Preparing Forecast...</p>
         </div>
-        <label for="location">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <title>map-marker</title>
-                <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,
-                2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,
-                14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" fill="white" />
-            </svg>
-        </label>
-        <input type="text" id="location">
-        <button id="submit">Search</button>
-    </div>
-    <div id="weather">
-        <div class="address">Kolkata, WB, India</div>
-        <div class="temperature">75.4<sup>°F</sup></div>
-        <div class="extras">
-            <div class="feels">Feels like 80.0<sup>°F</sup></div>
-            <div class="humidity">Humidity: 74.2%</div>
-            <div class="wind">Wind: 10MPH</div>
-        </div>
-        <div class="conditions">Partially Cloudy</div>
-    </div>
-    <div id="loading">
-        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-  viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-<rect fill="#fff" width="3" height="100" transform="translate(0) rotate(180 3 50)">
-  <animate
-      attributeName="height"
-      attributeType="XML"
-      dur="1s"
-      values="30; 100; 30"
-      repeatCount="indefinite"/>
-</rect>
-<rect x="17" fill="#fff" width="3" height="100" transform="translate(0) rotate(180 20 50)">
-  <animate
-      attributeName="height"
-      attributeType="XML"
-      dur="1s"
-      values="30; 100; 30"
-      repeatCount="indefinite"
-      begin="0.1s"/>
-</rect>
-<rect x="40" fill="#fff" width="3" height="100" transform="translate(0) rotate(180 40 50)">
-  <animate
-      attributeName="height"
-      attributeType="XML"
-      dur="1s"
-      values="30; 100; 30"
-      repeatCount="indefinite"
-      begin="0.3s"/>
-</rect>
-<rect x="60" fill="#fff" width="3" height="100" transform="translate(0) rotate(180 58 50)">
-  <animate
-      attributeName="height"
-      attributeType="XML"
-      dur="1s"
-      values="30; 100; 30"
-      repeatCount="indefinite"
-      begin="0.5s"/>
-</rect>
-<rect x="80" fill="#fff" width="3" height="100" transform="translate(0) rotate(180 76 50)">
-  <animate
-      attributeName="height"
-      attributeType="XML"
-      dur="1s"
-      values="30; 100; 30"
-      repeatCount="indefinite"
-      begin="0.1s"/>
-</rect>
-</svg>
     </div>
 </body>
+
 </html>

@@ -1,0 +1,77 @@
+.app-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Dashboard Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+/* Main Column */
+.main-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    min-width: 0;
+    /* Fix flex child stretching */
+}
+
+/* PC/Tablet View - Lowered from 1024px to 768px */
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 24px;
+    }
+
+    .hero-card {
+        padding: 48px;
+        min-height: 300px;
+    }
+
+    .hourly-item {
+        min-width: 110px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-container {
+        padding: 16px;
+        gap: 24px;
+    }
+
+    .hero-card {
+        padding: 32px 20px;
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+    }
+
+    .temperature {
+        font-size: 5rem;
+    }
+
+    .temperature sup {
+        font-size: 2rem;
+    }
+
+    .location-info .address {
+        font-size: 1.8rem;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
