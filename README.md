@@ -2,6 +2,12 @@
 
 A modern, highly responsive weather dashboard built with Vanilla JavaScript, HTML5, and CSS3. This project features a clean "Bento-style" UI with immersive atmospheric effects and pro-level weather insights.
 
+Light Mode
+<img width="1920" height="1080" alt="Screenshot (243)" src="https://github.com/user-attachments/assets/bb77483c-be3d-4259-a3bf-8ab196faa47f" />
+Dark Mode
+<img width="1920" height="1080" alt="Screenshot (242)" src="https://github.com/user-attachments/assets/c0620712-e548-4b97-9833-4c3be48764da" />
+
+
 ## 🚀 Key Features
 
 - **📍 Precision Geolocation**: Automatically detects your current location to show hyper-local weather instantly.
